@@ -1,23 +1,53 @@
-import logo from './logo.svg';
 import './App.css';
 
+
 function App() {
+  
+  const board = [];
+for (let i = 0; i < 8; i++) {
+	board[i] = [];
+}
+const addMove = (x, y, level) => {
+	if (x >= 0 && x <= 7 && y >= 0 && y <= 7 && board[x][y] == null) {
+		board[x][y] = level;
+	}
+};
+const addAllMoves = (x, y, level) => {
+	addMove(x + 1, y + 2, level);
+	addMove(x + 2, y + 1, level);
+	addMove(x + 2, y - 1, level);
+	addMove(x + 1, y - 2, level);
+	addMove(x - 1, y - 2, level);
+	addMove(x - 2, y - 1, level);
+	addMove(x - 2, y + 1, level);
+	addMove(x - 1, y + 2, level);
+};
+const addAllPossible = (level) => {
+	for (let i = 0; i < 8; i++) {
+		for (let j = 0; j < 8; j++) {
+			if (board[i][j] === level) {
+				addAllMoves(i, j, level + 1);
+			}
+		}
+	}
+};
+const findPath = (startX, startY, endX, endY) => {
+	addMove(startX, startY, 0);
+	let index = 0;
+	do {
+		addAllPossible(index++);
+	} while (board[endX][endY] == null);
+	return board[endX][endY];
+};
+console.log(findPath(0,0 , 4, 4));
+console.log(findPath(1,2 , 3, 4));
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Possible Move for Knight</h2>
+      <div className='result'>{findPath(1,2 , 3, 4)}</div>
+      <div className='result'>{findPath(0,0 , 0, 0)}</div>
+      <div className='result'>{findPath(2,2 , 3, 4)}</div>
+      <div className='result'>{findPath(4,5, 6, 7)}</div>
     </div>
   );
 }
